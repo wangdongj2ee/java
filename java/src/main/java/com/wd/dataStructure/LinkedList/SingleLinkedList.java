@@ -177,9 +177,9 @@ public class SingleLinkedList<T> implements Iterator<T>{
         return size;
     }
 
-    public void setSize(int size) {
-        this.size = size;
-    }
+//    public void setSize(int size) {
+//        this.size = size;
+//    }
 
     /**
      * 链表节点类
