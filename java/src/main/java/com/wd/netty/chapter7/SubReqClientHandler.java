@@ -5,7 +5,7 @@ import io.netty.channel.ChannelHandlerContext;
 
 public class SubReqClientHandler extends ChannelHandlerAdapter {
 
-	@Override
+//	@Override
 	public void channelActive(ChannelHandlerContext ctx)
 			throws Exception {
 		for(int i=0;i<10;i++){
@@ -31,12 +31,12 @@ public class SubReqClientHandler extends ChannelHandlerAdapter {
 		ctx.close();
 	}
 	
-	@Override
+//	@Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         System.out.println("Receive server response : ["+msg+"]");
     }
 	
-	@Override
+//	@Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
         ctx.flush();
     }

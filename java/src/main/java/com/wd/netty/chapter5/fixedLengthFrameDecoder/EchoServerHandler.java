@@ -6,7 +6,7 @@ import io.netty.channel.ChannelHandlerContext;
 public class EchoServerHandler extends ChannelHandlerAdapter {
 
 
-	@Override
+//	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg)
 			throws Exception {
 //		String body = (String) msg;

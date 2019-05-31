@@ -11,7 +11,7 @@ public class TimeServerHandler extends ChannelHandlerAdapter {
 
 	private int counter;
 
-	@Override
+//	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg)
 			throws Exception {
 		String body = (String) msg;

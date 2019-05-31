@@ -5,7 +5,7 @@ import io.netty.channel.ChannelHandlerContext;
 
 public class SubReqServerHandler extends ChannelHandlerAdapter {
 
-	@Override
+//	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg)
 			throws Exception {
 		SubscribeReq req = (SubscribeReq) msg;
