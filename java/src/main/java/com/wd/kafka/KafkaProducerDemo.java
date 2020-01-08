@@ -26,7 +26,7 @@ public class KafkaProducerDemo {
     public static void main(String[] arg0){
         Properties config = initConfig();
         KafkaProducer<String,String> producer = new KafkaProducer(config);
-        ProducerRecord<String,String> record = new ProducerRecord(topic,"hello,kafka");
+
         try{
 //            producer.send(record, new Callback() {
 //                @Override
@@ -38,9 +38,12 @@ public class KafkaProducerDemo {
 //                    }
 //                }
 //            });
+            for(int i=0;i<10;i++){
+                ProducerRecord<String,String> record = new ProducerRecord(topic,"hello,kafka"+i);
+                RecordMetadata metadata = producer.send(record).get();
+                System.out.println(metadata);
+            }
 
-            RecordMetadata metadata = producer.send(record).get();
-            System.out.println(metadata);
         }catch (Exception e){
             e.printStackTrace();
         }
