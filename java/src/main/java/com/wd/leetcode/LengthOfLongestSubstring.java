@@ -9,7 +9,7 @@ public class LengthOfLongestSubstring {
         String ss = "abcabcbb";
 //        String ss = "pwwkewprp";测试2
         LengthOfLongestSubstring lengthOfLongestSubstring = new LengthOfLongestSubstring();
-//        System.out.println(lengthOfLongestSubstring.lengthOfLongestSubstringV3(ss));
+//        System.out.println(lengthOfLongestSubstring.lengthOfLongestSubstringV3(ss));测试3
         System.out.println(System.currentTimeMillis());
     }
 
