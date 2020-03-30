@@ -4,7 +4,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-
+//注释1
 public class BlockObject {
 	
 	private final Lock lock = new ReentrantLock();
