@@ -1,16 +1,33 @@
 package com.wd.leetcode;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class LengthOfLongestSubstring {
 
     public static void main(String[] arg0){
 //        String ss = "dvdf";
-//        String ss = "abcabcbb";
-        String ss = "pwwkew";
+        String ss = "abcabcbb";
+//        String ss = "pwwkewprp";
         LengthOfLongestSubstring lengthOfLongestSubstring = new LengthOfLongestSubstring();
-        System.out.println(lengthOfLongestSubstring.lengthOfLongestSubstringV2(ss));
+//        System.out.println(lengthOfLongestSubstring.lengthOfLongestSubstringV3(ss));
+        System.out.println(System.currentTimeMillis());
+    }
+
+
+    public int lengthOfLongestSubstringV3(String s) {
+        int n = s.length(), ans = 0,j=0,i=0;
+        Map<Character, Integer> map = new LinkedHashMap<>(); // current index of character
+        for (; j < n; j++) {
+            if (map.containsKey(s.charAt(j))) {
+                i = Math.max(map.get(s.charAt(j)), i);
+            }
+            ans = Math.max(ans, j - i + 1);
+            map.put(s.charAt(j), j + 1);
+//            map.put(s.charAt(j), j);
+            System.out.println("j:"+j+";i:"+i+";ans:"+ans+";map:"+map);
+        }
+
+        return ans;
     }
 
     public int lengthOfLongestSubstringV2(String s) {
