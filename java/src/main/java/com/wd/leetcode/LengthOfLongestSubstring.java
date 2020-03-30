@@ -5,12 +5,15 @@ import java.util.*;
 public class LengthOfLongestSubstring {
 
     public static void main(String[] arg0){
-//        String ss = "dvdf";
+//        String ss = "dvdf"; 测试1
         String ss = "abcabcbb";
-//        String ss = "pwwkewprp";
+//        String ss = "pwwkewprp";测试2
         LengthOfLongestSubstring lengthOfLongestSubstring = new LengthOfLongestSubstring();
-//        System.out.println(lengthOfLongestSubstring.lengthOfLongestSubstringV3(ss));
+//        System.out.println(lengthOfLongestSubstring.lengthOfLongestSubstringV3(ss));测试3
         System.out.println(System.currentTimeMillis());
+        //测试4
+        //测试5
+        //测试6
     }
 
 
