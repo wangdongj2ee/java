@@ -6,6 +6,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 //注释1
 //注释2
+//注释3
 public class BlockObject {
 	
 	private final Lock lock = new ReentrantLock();
