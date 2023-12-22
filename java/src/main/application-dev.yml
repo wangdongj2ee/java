@@ -1,0 +1,104 @@
+server:
+  port: 8652
+  shutdown: graceful
+
+spring:
+  application:
+    name: hids-base-data-cesyncdata-zj
+
+  zipkin:
+    base-url: http://192.168.18.233:9411
+  sleuth:
+    reactor:
+      instrumentation-type: manual
+    propagation:
+      type: aws
+
+  cloud:
+    zookeeper:
+      connect-string: 192.168.18.233:2181
+      discovery:
+        register: true
+        enabled: true
+        instance-host: 192.168.18.230
+
+  datasource:
+    dynamic:
+      primary: ce
+      strict: false
+      datasource:
+        ce:
+          url: jdbc:mysql://192.168.18.230:3306/base_data_hids?useUnicode=true&characterEncoding=UTF8&autoReconnect=true&useSSL=false&allowMultiQueries=true&useAffectedRows=true&serverTimezone=Asia/Shanghai
+          username: root
+          password: Root###12345
+          driver-class-name: com.mysql.cj.jdbc.Driver
+        basedata:
+          type: com.zaxxer.hikari.HikariDataSource
+          url: jdbc:mysql://192.168.18.230:3306/dl_data_center?useUnicode=true&characterEncoding=UTF8&autoReconnect=true&useSSL=false&allowMultiQueries=true&useAffectedRows=true&serverTimezone=Asia/Shanghai
+          username: root
+          password: Root###12345
+          driver-class-name: com.mysql.cj.jdbc.Driver
+  sql:
+    init:
+      platform: mysql
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+
+  redis:
+    sentinel:
+      master: mymaster
+      nodes:
+        - 192.168.18.230:26377
+        - 192.168.18.232:26377
+        - 192.168.18.233:26377
+    database: 1
+    password: Ce12#Lpo8
+    timeout: 5000
+    lettuce:
+      pool:
+        max-active: 200
+        max-wait: -1ms
+        max-idle: 10
+        min-idle: 0
+
+zookeeper:
+  curator:
+    retryCount: 5
+    elapsedTimeMs: 5000
+    connectString: 192.168.18.233:2181
+    sessionTimeoutMs: 60000
+    connectionTimeoutMs: 5000
+
+logging:
+  level:
+    com.ce.hids.middleware: info
+    org.apache.ibatis.logging.stdout.StdOutImpl: info
+
+management:
+  metrics:
+    export:
+      influx:
+        enabled: false
+
+mybatis-plus:
+  configuration:
+    call-setters-on-nulls: true
+    map-underscore-to-camel-case: false
+    auto-mapping-behavior: full
+    cache-enabled: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  type-aliases-package: com.ce.hids.middleware.cesyncdata.entity.**
+  mapper-locations: classpath*:com/ce/hids/middleware/cesyncdata/mapper/**/*.xml
+  global-config:
+    db-config:
+      id-type: auto
+      logic-not-delete-value: 1
+      logic-delete-value: 0
+
+hids-base-data-platform:
+  max-in-memory-size: 512
+  worker-pool-size: 64
+  areaCode:
+    splitDelimiter: "-"
+  shutdown-delay-seconds: 56

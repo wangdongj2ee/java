@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="fatal" monitorInterval="5">
+    <Properties>
+        <Property name="baseDir" value="logs/hibtm-api"/>
+    </Properties>
+
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <ThresholdFilter level="info" onMatch="ACCEPT"
+                             onMismatch="DENY"/>
+            <PatternLayout
+                    pattern="[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%X{logId}][%level] [%c{1.1}(%L)] - %msg%n"/>
+        </Console>
+
+        <!--debug级别日志文件输出-->
+        <RollingFile name="debug_appender" fileName="${baseDir}/debug.log"
+                     filePattern="${baseDir}/debug_%i.log.%d{yyyy-MM-dd}">
+            <!-- 过滤器 -->
+            <Filters>
+                <!-- 限制日志级别在debug及以上在info以下 -->
+                <ThresholdFilter level="debug"/>
+                <ThresholdFilter level="info" onMatch="DENY" onMismatch="NEUTRAL"/>
+            </Filters>
+            <!-- 日志格式 -->
+            <PatternLayout pattern="[%d{mm:ss:SSS}] [%p] - %l - %m%n"/>
+            <!-- 策略 -->
+            <Policies>
+                <!-- 每隔一天转存 -->
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <!-- 文件大小 -->
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy>
+                <!-- maxDepth删除的层级，1就是只删除${baseDir}目录下的，为2就是在${baseDir}目录中的子目录中找到符合要求的并删除 -->
+                <Delete basePath="${baseDir}/" maxDepth="1">
+                    <IfFileName glob="debug_*.log.*"/>
+                    <!--指定文件过期时间，age的单位：D、H、M、S，分别表示天、小时、分钟、秒。-->
+                    <IfLastModified age="60D"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+
+        <!-- info级别日志文件输出 -->
+        <RollingFile name="hibtm_appender" fileName="${baseDir}/hibtm.log"
+                     filePattern="${baseDir}/hibtm_%i.log.%d{yyyy-MM-dd}">
+            <!-- 过滤器 -->
+            <Filters>
+                <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+<!--                <ThresholdFilter level="error" onMatch="DENY" onMismatch="NEUTRAL"/>-->
+            </Filters>
+            <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%X{logId}][%level] [%c{1.1}(%L)] - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy>
+                <!-- maxDepth删除的层级，1就是只删除${baseDir}目录下的，为2就是在${baseDir}目录中的子目录中找到符合要求的并删除 -->
+                <Delete basePath="${baseDir}/" maxDepth="1">
+                    <IfFileName glob="hibtm_*.log.*"/>
+                    <!--指定文件过期时间，age的单位：D、H、M、S，分别表示天、小时、分钟、秒。-->
+                    <IfLastModified age="60D"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+
+        <RuleFilterLogAppender name="ruleFilterLogAppender" >
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] [%-5p] {%F:%L} - %m%n" />
+            <RuleFilterLogFilter onMatch="DENY" onMismatch="ACCEPT"/>
+        </RuleFilterLogAppender>
+
+        <RollingFile name="error_appender" fileName="${baseDir}/error.log"
+                     filePattern="${baseDir}/error_%i.log.%d{yyyy-MM-dd}">
+            <Filters>
+                <ThresholdFilter level="error"/>
+            </Filters>
+            <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%X{logId}][%level] [%c{1.1}(%L)] - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy>
+                <!-- maxDepth删除的层级，1就是只删除${baseDir}目录下的，为2就是在${baseDir}目录中的子目录中找到符合要求的并删除 -->
+                <Delete basePath="${baseDir}/" maxDepth="1">
+                    <IfFileName glob="error_*.log.*"/>
+                    <!--指定文件过期时间，age的单位：D、H、M、S，分别表示天、小时、分钟、秒。-->
+                    <IfLastModified age="60D"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+        <Async name="Async">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="debug_appender"/>
+            <AppenderRef ref="hibtm_appender"/>
+            <AppenderRef ref="error_appender"/>
+        </Async>
+    </Appenders>
+    <Loggers>
+        <Root level="debug">
+            <AppenderRef ref="Async"/>
+            <AppenderRef ref="ruleFilterLogAppender"/>
+        </Root>
+        <!--异步log -->
+        <!--        <AsyncLogger name="all" level="trace" additivity="false">-->
+        <!--            <AppenderRef ref="Console"/>-->
+        <!--            <AppenderRef ref="debug_appender"/>-->
+        <!--            <AppenderRef ref="info_appender"/>-->
+        <!--            <AppenderRef ref="error_appender"/>-->
+        <!--        </AsyncLogger>-->
+    </Loggers>
+</Configuration>

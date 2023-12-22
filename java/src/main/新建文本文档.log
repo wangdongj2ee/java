@@ -1,0 +1,11 @@
+最近开发时，用springBoot的定时任务，但是spring的定时任务始终无法生效，网上常见的在Application启动类上@EnableScheduling注解也加了，对应的定时任务的service类也加了@Component注解，而且我的cron表达式也对（为啥我确定cron表达式是对的呢，且看下面）
+然后我就怀疑我是不是有啥包没引，或者说包引用的不对，导致定时任务相关配置没加载，为了确认是不是这个问题，我就把我的表达式0 0/1 * * * ?改为0 0/1 * * * ? *这样的，结果启动报错，异常信息就是表达式没写对：
+
+这就代表其实定时任务解析到我的配置了，但是不知道为啥没有调度起来，这就没办法了，我只能去网上查大家对这块的源码解析，然后尝试从源码角度查找一下问题所在
+在网上翻了一遍大家写的源码解析，我发现spring的定时任务其实分为两步，第一步是解析定时任务配置，然后缓存起来，这块主要是在ScheduledAnnotationBeanPostProcessor类的postProcessAfterInitialization方法里面执行的，熟悉spring扩展点的朋友一看这个方法名就知道这个方法其实是属于BeanPostProcessor接口的，主要是在bean被初始化前后调用的，那么在定时任务里就是在postProcessAfterInitialization（初始化方法调用后被调用）方法里遍历该类里面有没有Scheduled注解的方法，如果有的话就通过反射拿出该方法的实例，然后对配置（cron表达式等）进行解析，并放到本地缓存里面，但是需要注意的是这里只是解析完这些东西之后放到本地缓存里，但是并没有启动任务，那任务是在什么启动的呢？
+看了ScheduledAnnotationBeanPostProcessor里面所有的方法，突然看到一个finishRegistration方法，我就突然猜想启动定时调度的操作会不会是在这个方法里执行的呢？然后就找了调用这个方法的地方，看到了在onApplicationEvent方法里有调用，然后看了类上面，果然实现了ApplicationListener接口，并且订阅的是ContextRefreshedEvent类型的事件，看过spring源码的朋友们都知道，在spring加载完成后会在AbstractApplicationContext的registerListeners方法里面进行事件监听的通知，而我在ScheduledAnnotationBeanPostProcessor的onApplicationEvent打断点，启动工程，却发现始终没有到我的断点里面，然后就在AbstractApplicationContext的registerListeners方法里面打断点，一个一个跟，看看为啥没通知到我这里，后来发现原来是一个zk配置错误，导致zk的onApplicationEvent方法里面一直在循环调用，死循环了，导致其他的onApplicationEvent没有调用到
+OK，找到原因了，那就修改一下ZK的配置，然后重新启动项目，果然好了，就这浪费了我一个下午的时间
+其实这个对我自己也是有好处的，像我之前其实一直不太理解BeanPostProcessor接口提供的这两个扩展点具体能干什么，还有ApplicationListener的监听接口能干什么用，但是这个看了定时任务的源码，就突然就明白了，原来这个接口是这么玩的啊，看来spring的扩展点spring本身也在用啊，以后遇到不理解的扩展点就可以看看源码里实现了什么功能
+参考：https://www.cnblogs.com/throwable/p/12616945.html
+https://goffery-gong.github.io/2019/03/08/SpringBoot%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1%E6%B3%A8%E8%A7%A3-@Scheduled%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/
+https://juejin.cn/post/6844903924936212494
